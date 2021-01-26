@@ -1,0 +1,975 @@
+{
+	"info": {
+		"_postman_id": "b665d902-4993-489a-807b-5b7338740550",
+		"name": "Relability Test - Measurement Points",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Device: KeysAPI: Create Key",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Use current date and time to crate a unique Policy ID",
+							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify status code is 201",
+							"pm.test(\"Status code is 201\", () => {",
+							"  pm.response.to.have.status(201);",
+							"});",
+							"// Verify that reponse time is below threshold",
+							"pm.test(\"Response time is less than 500ms\", () => {",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							"",
+							"// Remove '-' in protection-keys because of (apparent) parsing issue",
+							"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
+							"var jsonData = JSON.parse(strippedResponse);",
+							"",
+							"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
+							"",
+							"// console.log(pm.environment.get(\"keyId\"));",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-CONVERSATION-ID",
+						"type": "text",
+						"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"ref\": \"{{keyRef}}\"\n            }\n        ]\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
+					"protocol": "https",
+					"host": [
+						"{{systemURL}}"
+					],
+					"path": [
+						"v2.4",
+						"{{keyspace}}",
+						"keys",
+						"create"
+					]
+				},
+				"description": "https://dev.ionic.com/api/scim/create-user"
+			},
+			"response": []
+		},
+		{
+			"name": "Device: KeysAPI: Create Key Dasha Example",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Use current date and time to crate a unique Policy ID",
+							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify status code is 201",
+							"pm.test(\"Status code is 201\", () => {",
+							"  pm.response.to.have.status(201);",
+							"});",
+							"// Verify that reponse time is below threshold",
+							"pm.test(\"Response time is less than 500ms\", () => {",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							"",
+							"// Remove '-' in protection-keys because of (apparent) parsing issue",
+							"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
+							"var jsonData = JSON.parse(strippedResponse);",
+							"",
+							"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
+							"",
+							"// console.log(pm.environment.get(\"keyId\"));",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-CONVERSATION-ID",
+						"type": "text",
+						"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"ref\": \"{{keyRef}}\"\n            }\n        ]\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
+					"protocol": "https",
+					"host": [
+						"{{systemURL}}"
+					],
+					"path": [
+						"v2.4",
+						"{{keyspace}}",
+						"keys",
+						"create"
+					]
+				},
+				"description": "https://dev.ionic.com/api/scim/create-user"
+			},
+			"response": []
+		},
+		{
+			"name": "Device: KeysAPI: Create Key w/Embargo",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Use current date and time to crate a unique Policy ID",
+							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify status code is 201",
+							"pm.test(\"Status code is 201\", () => {",
+							"  pm.response.to.have.status(201);",
+							"});",
+							"// Verify that reponse time is below threshold",
+							"pm.test(\"Response time is less than 500ms\", () => {",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							"",
+							"// Remove '-' in protection-keys because of (apparent) parsing issue",
+							"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
+							"var jsonData = JSON.parse(strippedResponse);",
+							"",
+							"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
+							"",
+							"// console.log(pm.environment.get(\"keyId\"));",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-CONVERSATION-ID",
+						"type": "text",
+						"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"ref\": \"{{keyRef}}\"\n            }\n        ]\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
+					"protocol": "https",
+					"host": [
+						"{{systemURL}}"
+					],
+					"path": [
+						"v2.4",
+						"{{keyspace}}",
+						"keys",
+						"create"
+					]
+				},
+				"description": "https://dev.ionic.com/api/scim/create-user\n\nFrom John Ortega example: https://confluence.in.ionicsecurity.com/pages/viewpage.action?pageId=182714810"
+			},
+			"response": []
+		},
+		{
+			"name": "Device: KeysAPI: Create Key w/ExtID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Use current date and time to crate a unique Policy ID",
+							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify status code is 201",
+							"pm.test(\"Status code is 201\", () => {",
+							"  pm.response.to.have.status(201);",
+							"});",
+							"// Verify that reponse time is below threshold",
+							"pm.test(\"Response time is less than 500ms\", () => {",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							"",
+							"// Remove '-' in protection-keys because of (apparent) parsing issue",
+							"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
+							"var jsonData = JSON.parse(strippedResponse);",
+							"",
+							"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
+							"",
+							"// console.log(pm.environment.get(\"keyId\"));",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-CONVERSATION-ID",
+						"type": "text",
+						"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 10,\n                \"ExtID\": \"{{keyRef}}\"\n            }\n        ]\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
+					"protocol": "https",
+					"host": [
+						"{{systemURL}}"
+					],
+					"path": [
+						"v2.4",
+						"{{keyspace}}",
+						"keys",
+						"create"
+					]
+				},
+				"description": "https://dev.ionic.com/api/scim/create-user"
+			},
+			"response": []
+		},
+		{
+			"name": "Device: KeysAPI: Fetch Key",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Use current date and time to crate a unique Policy ID",
+							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify status code is 200",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"// Verify that reponse time is below threshold",
+							"pm.test(\"Response time is less than 500ms\", () => {",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-CONVERSATION-ID",
+						"type": "text",
+						"value": "CID|NONVBE|60bd0ef6-5701-4311-6ff7-cb1230ef565a|INUp|1611354545121|2.4.0"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            \"{{keyId}}\"\n        ]\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/fetch",
+					"protocol": "https",
+					"host": [
+						"{{systemURL}}"
+					],
+					"path": [
+						"v2.4",
+						"{{keyspace}}",
+						"keys",
+						"fetch"
+					]
+				},
+				"description": "https://dev.ionic.com/api/scim/create-user"
+			},
+			"response": []
+		},
+		{
+			"name": "Device: KeysAPI: Fetch Key w/ExtID (Not Working)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Use current date and time to crate a unique Policy ID",
+							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify status code is 200",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"// Verify that reponse time is below threshold",
+							"pm.test(\"Response time is less than 500ms\", () => {",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-CONVERSATION-ID",
+						"type": "text",
+						"value": "CID|NONVBE|60bd0ef6-5701-4311-6ff7-cb1230ef565a|INUp|1611354545121|2.4.0",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"Qty\": 5,\n                \"ExtID\": \"{{keyRef}}\"\n            }\n        ]\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/fetch",
+					"protocol": "https",
+					"host": [
+						"{{systemURL}}"
+					],
+					"path": [
+						"v2.4",
+						"{{keyspace}}",
+						"keys",
+						"fetch"
+					]
+				},
+				"description": "https://dev.ionic.com/api/scim/create-user"
+			},
+			"response": []
+		},
+		{
+			"name": "SCIM: List Scopes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify status code is 200",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"// Verify that reponse time is below threshold",
+							"pm.test(\"Response time is less than 500ms\", () => {",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Scopes",
+					"protocol": "https",
+					"host": [
+						"{{systemURL}}"
+					],
+					"path": [
+						"v2",
+						"{{tenantID}}",
+						"scim",
+						"Scopes"
+					]
+				},
+				"description": "https://dev.ionic.com/api/scim/list-scopes"
+			},
+			"response": []
+		},
+		{
+			"name": "Data Markings: Create Data Marking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify status code is 201",
+							"pm.test(\"Status code is 201\", () => {",
+							"  pm.response.to.have.status(201);",
+							"});",
+							"// Verify that reponse time is below threshold",
+							"pm.test(\"Response time is less than 500ms\", () => {",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Use current date and time to crate a unique Data Marking Name",
+							"pm.environment.set(\"dataMarkingName\", 'Custom Data Marking - ' + new Date().toISOString());",
+							"",
+							"",
+							"/*",
+							"//",
+							"// This was the former method incementing a counter to make a unique value",
+							"// May be useful in other Pre-request scripts",
+							"//",
+							"// Use dataMarkingCount to store the Data Marking number",
+							"dataMarkingCount = pm.environment.get(\"dataMarkingCount\");",
+							"// Check if dataMarkingCount is already defined ",
+							"if (dataMarkingCount) {",
+							"    dataMarkingCount++; // increment",
+							"} else {",
+							"    dataMarkingCount = 1; // start from 1",
+							"}",
+							"",
+							"// Build and Store Data Marking Name",
+							"currentDataMarkingName = pm.environment.get(\"dataMarkingName\") + dataMarkingCount;",
+							"pm.environment.set(\"currentDataMarkingName\", currentDataMarkingName);",
+							"// Store current count",
+							"pm.environment.set(\"dataMarkingCount\", dataMarkingCount);",
+							"",
+							"// console.log(\"Current Data Marking Name:\" + pm.environment.get(\"currentDataMarkingName\"));",
+							"// console.log(\"Data Marking Count: \" + pm.environment.get(\"dataMarkingCount\"));",
+							"*/"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{dataMarkingName}}\",\n    \"public\": true,\n    \"adminOnly\": true,\n    \"defaultValue\": \"important\",\n    \"detail\": {\n        \"dataType\": \"string\",\n        \"description\": \"Custom corporate marking.\",\n        \"values\": [\n            {\n                \"description\": \"An important item\",\n                \"name\": \"important\"\n            }\n        ]\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{systemURL}}/v2/{{tenantID}}/markings",
+					"protocol": "https",
+					"host": [
+						"{{systemURL}}"
+					],
+					"path": [
+						"v2",
+						"{{tenantID}}",
+						"markings"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": null,
+							"description": "Return markings that match by name. 'or' can be used",
+							"disabled": true
+						},
+						{
+							"key": "public",
+							"value": null,
+							"description": "If true, return markings that are flagged as public and visible to Ionic clients.",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Data Markings: List Data Markings",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify status code is 200",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"// Verify that reponse time is below threshold",
+							"pm.test(\"Response time is less than 500ms\", () => {",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{systemURL}}/v2/{{tenantID}}/markings?limit=1&skip=0",
+					"protocol": "https",
+					"host": [
+						"{{systemURL}}"
+					],
+					"path": [
+						"v2",
+						"{{tenantID}}",
+						"markings"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "1"
+						},
+						{
+							"key": "skip",
+							"value": "0"
+						},
+						{
+							"key": "name",
+							"value": null,
+							"description": "Return markings that match by name. 'or' can be used",
+							"disabled": true
+						},
+						{
+							"key": "public",
+							"value": null,
+							"description": "If true, return markings that are flagged as public and visible to Ionic clients.",
+							"disabled": true
+						}
+					]
+				},
+				"description": "https://dev.ionic.com/api/markings/list-data-markings"
+			},
+			"response": []
+		},
+		{
+			"name": "SCIM: List Users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify status code is 200",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"// Verify that reponse time is below threshold",
+							"pm.test(\"Response time is less than 500ms\", () => {",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users",
+					"protocol": "https",
+					"host": [
+						"{{systemURL}}"
+					],
+					"path": [
+						"v2",
+						"{{tenantID}}",
+						"scim",
+						"Users"
+					]
+				},
+				"description": "https://dev.ionic.com/api/scim/list-users"
+			},
+			"response": []
+		},
+		{
+			"name": "KNS: Get KNS",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify status code is 200",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"// Verify that reponse time is below threshold",
+							"pm.test(\"Response time is less than 500ms\", () => {",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{systemURL}}/v2.4/kns/keyspaces/{{keyspace}}",
+					"protocol": "https",
+					"host": [
+						"{{systemURL}}"
+					],
+					"path": [
+						"v2.4",
+						"kns",
+						"keyspaces",
+						"{{keyspace}}"
+					]
+				},
+				"description": "https://dev.ionic.com/api/scim/create-user"
+			},
+			"response": []
+		},
+		{
+			"name": "Policies: List Policies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify status code is 200",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"// Verify that reponse time is below threshold",
+							"pm.test(\"Response time is less than 500ms\", () => {",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{systemURL}}/v2/{{tenantID}}/policies",
+					"protocol": "https",
+					"host": [
+						"{{systemURL}}"
+					],
+					"path": [
+						"v2",
+						"{{tenantID}}",
+						"policies"
+					]
+				},
+				"description": "https://dev.ionic.com/api/policies/list-policies"
+			},
+			"response": []
+		},
+		{
+			"name": "Download API: Download Records",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify status code is 200",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"// Verify that reponse time is below threshold",
+							"pm.test(\"Response time is less than 500ms\", () => {",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Format date into YYYYMMDD",
+							"var x = new Date();",
+							"var y = x.getFullYear().toString();",
+							"var m = (x.getMonth() + 1).toString();",
+							"var d = x.getDate().toString();",
+							"// Pad day and month to two digits if only one digit",
+							"(d.length == 1) && (d = '0' + d);",
+							"(m.length == 1) && (m = '0' + m);",
+							"// Set formating with '-' to seperate date and time.",
+							"// Set time to midnight 00:00",
+							"var yyyymmdd = y + m + d + '-00:00';",
+							"pm.environment.set(\"downloadDate\", yyyymmdd);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{systemURL}}/v2/{{tenantID}}/download?start={{downloadDate}}",
+					"protocol": "https",
+					"host": [
+						"{{systemURL}}"
+					],
+					"path": [
+						"v2",
+						"{{tenantID}}",
+						"download"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "{{downloadDate}}"
+						}
+					]
+				},
+				"description": "NOTE: This API request was previously known as \"logstore\"\n\nhttps://dev.ionic.com/api/download/download-records"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "NWY4NGE1ZDlmMDg1ODgwNzY4ZmYwN2Y1dIiN6nLrmU69dw03DBhGLD6y14H7nKB5RzQKnoIu2Lg=",
+				"type": "string"
+			}
+		]
+	}
+}
