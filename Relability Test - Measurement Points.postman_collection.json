@@ -356,7 +356,20 @@
 					"script": {
 						"exec": [
 							"// Use current date and time to crate a unique Policy ID",
-							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
+							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());",
+							"// Format date into YYYYMMDD",
+							"var x = new Date();",
+							"var y = x.getFullYear().toString();",
+							"var m = (x.getMonth() + 1).toString();",
+							"var d = x.getDate().toString();",
+							"// Pad day and month to two digits if only one digit",
+							"(d.length == 1) && (d = '0' + d);",
+							"(m.length == 1) && (m = '0' + m);",
+							"// Set formating with '-' to seperate date and time.",
+							"// Set time to midnight 00:00",
+							"var yyyymmdd = y + '-' + m + '-' + d + 'T' + '00:00:00Z';",
+							"pm.environment.set(\"embargoDate\", yyyymmdd);",
+							"// console.log(yyyymmdd);"
 						],
 						"type": "text/javascript"
 					}
@@ -403,12 +416,13 @@
 					{
 						"key": "X-CONVERSATION-ID",
 						"type": "text",
-						"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0"
+						"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0",
+						"disabled": true
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"ref\": \"{{keyRef}}\"\n            }\n        ]\n    }\n}",
+					"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"attributes\": {\n                    \"ionic-embargo\": \"embargoDate\"\n                }\n            }\n        ]\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -502,8 +516,7 @@
 						"keys",
 						"fetch"
 					]
-				},
-				"description": "https://dev.ionic.com/api/scim/create-user"
+				}
 			},
 			"response": []
 		},
@@ -559,7 +572,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"data\": {\n        \"protection-keys\": [],\n        \"protection-key-queries\": {\n            \"qref1\": {\n                \"ionic-external-id\": \"davekey\"\n            },\n            \"qref2\": {\n                \"ionic-external-id\": \"{{keyRef}}\"\n            }\n        }\n    }\n}",
+					"raw": "{\n    \"data\": {\n        \"protection-keys\": [],\n        \"protection-key-queries\": {\n            \"qref1\": {\n                \"ionic-external-id\": \"{{externalId}}\"\n            },\n            \"qref2\": {\n                \"ionic-external-id\": \"{{keyRef}}\"\n            }\n        }\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -578,8 +591,82 @@
 						"keys",
 						"fetch"
 					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Device: KeysAPI: Fetch Key w/External ID w/Qty",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Use current date and time to crate a unique Policy ID",
+							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
+						],
+						"type": "text/javascript"
+					}
 				},
-				"description": "https://dev.ionic.com/api/scim/create-user"
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify status code is 200",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"// Verify that reponse time is below threshold",
+							"pm.test(\"Response time is less than 500ms\", () => {",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-CONVERSATION-ID",
+						"type": "text",
+						"value": "CID|NONVBE|60bd0ef6-5701-4311-6ff7-cb1230ef565a|INUp|1611354545121|2.4.0",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n        \"protection-keys\": [],\n        \"protection-key-queries\": {\n            \"qref1\": {\n                \"ionic-external-id\": \"{{externalId}}\",\n                \"qty\": 10\n            },\n            \"qref2\": {\n                \"ionic-external-id\": \"{{keyRef}}\"\n            }\n        }\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/fetch",
+					"protocol": "https",
+					"host": [
+						"{{systemURL}}"
+					],
+					"path": [
+						"v2.4",
+						"{{keyspace}}",
+						"keys",
+						"fetch"
+					]
+				}
 			},
 			"response": []
 		},
