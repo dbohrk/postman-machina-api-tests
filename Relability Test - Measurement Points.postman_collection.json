@@ -311,7 +311,7 @@
 					"response": []
 				},
 				{
-					"name": "Device: KeysAPI: Create Key w/External ID",
+					"name": "Device: KeysAPI: Create Key w/External ID (attrubutes)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -401,7 +401,7 @@
 					"response": []
 				},
 				{
-					"name": "Device: KeysAPI: Create Key w/External ID (Single)",
+					"name": "Device: KeysAPI: Create Key w/External ID (cattrs)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -777,7 +777,7 @@
 					"response": []
 				},
 				{
-					"name": "Device: KeysAPI: Create Key w/Obligations",
+					"name": "Device: KeysAPI: Create Key w/Obligations (Offilne=true, Contidional=allow,labeling=false)",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -850,7 +850,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"attributes\": {\n                    \"ionic-embargo\": \"embargoDate\"\n                }\n            }\n        ]\n    }\n}",
+							"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"attributes\": {\n                    \"ionic-embargo\": \"{{embargoDate}}\",\n                    \"ionic-expire\": \"{{embargoDate}}\",\n                    \"obligations\": {\n                        \"ionic-content-encrypt\": [\n                            \"allow\"\n                        ],\n                        \"ionic-offline-duration-seconds\": [\n                            \"3782520\"\n                        ],\n                        \"ionic-offline-enabled\": [\n                            \"true\"\n                        ],\n                        \"ionic-labeling-enabled\": [\n                            \"false\"\n                        ]\n                    }\n                }\n            }\n        ]\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -870,7 +870,203 @@
 								"create"
 							]
 						},
-						"description": "KeysAPI Documentation:\nhttps://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/keysapi?at=develop\n\nObligations List:\nhttps://stash.in.ionicsecurity.com/projects/IP/repos/gyre/browse/policy/tests/testdata/obligations/list-obligations.json\n\nNOTE:\n    Conditional Protection (allow, prefer, always) missing from Body\n    Added to Immutable attributes Create POST"
+						"description": "KeysAPI Documentation:\nhttps://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/keysapi?at=develop\n\nObligations List:\nhttps://stash.in.ionicsecurity.com/projects/IP/repos/gyre/browse/policy/tests/testdata/obligations/list-obligations.json\n\nNOTE:\n    Obligation settings are overwirtten by Policy Obligations settings."
+					},
+					"response": []
+				},
+				{
+					"name": "Device: KeysAPI: Create Key w/Obligations (Offilne=false, Contidional=prefer,labeling=false)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Policy ID",
+									"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());",
+									"// Format date into YYYYMMDD",
+									"var x = new Date();",
+									"var y = x.getFullYear().toString();",
+									"var m = (x.getMonth() + 1).toString();",
+									"var d = x.getDate().toString();",
+									"// Pad day and month to two digits if only one digit",
+									"(d.length == 1) && (d = '0' + d);",
+									"(m.length == 1) && (m = '0' + m);",
+									"// Set formating with '-' to seperate date and time.",
+									"// Set time to midnight 00:00",
+									"var yyyymmdd = y + '-' + m + '-' + d + 'T' + '00:00:00Z';",
+									"pm.environment.set(\"embargoDate\", yyyymmdd);",
+									"// console.log(yyyymmdd);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 201",
+									"pm.test(\"Status code is 201\", () => {",
+									"  pm.response.to.have.status(201);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"// Remove '-' in protection-keys because of (apparent) parsing issue",
+									"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
+									"var jsonData = JSON.parse(strippedResponse);",
+									"",
+									"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
+									"",
+									"// console.log(pm.environment.get(\"keyId\"));",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CONVERSATION-ID",
+								"type": "text",
+								"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"attributes\": {\n                    \"ionic-embargo\": \"{{embargoDate}}\",\n                    \"ionic-expire\": \"{{embargoDate}}\",\n                    \"obligations\": {\n                        \"ionic-content-encrypt\": [\n                            \"allow\"\n                        ],\n                        \"ionic-offline-duration-seconds\": [\n                            \"3782520\"\n                        ],\n                        \"ionic-offline-enabled\": [\n                            \"false\"\n                        ],\n                        \"ionic-labeling-enabled\": [\n                            \"false\"\n                        ]\n                    }\n                }\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2.4",
+								"{{keyspace}}",
+								"keys",
+								"create"
+							]
+						},
+						"description": "KeysAPI Documentation:\nhttps://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/keysapi?at=develop\n\nObligations List:\nhttps://stash.in.ionicsecurity.com/projects/IP/repos/gyre/browse/policy/tests/testdata/obligations/list-obligations.json\n\nNOTE:\n    Obligation settings are overwirtten by Policy Obligations settings."
+					},
+					"response": []
+				},
+				{
+					"name": "Device: KeysAPI: Create Key w/Obligations (Offilne=false, Contidional=always,labeling=true)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Policy ID",
+									"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());",
+									"// Format date into YYYYMMDD",
+									"var x = new Date();",
+									"var y = x.getFullYear().toString();",
+									"var m = (x.getMonth() + 1).toString();",
+									"var d = x.getDate().toString();",
+									"// Pad day and month to two digits if only one digit",
+									"(d.length == 1) && (d = '0' + d);",
+									"(m.length == 1) && (m = '0' + m);",
+									"// Set formating with '-' to seperate date and time.",
+									"// Set time to midnight 00:00",
+									"var yyyymmdd = y + '-' + m + '-' + d + 'T' + '00:00:00Z';",
+									"pm.environment.set(\"embargoDate\", yyyymmdd);",
+									"// console.log(yyyymmdd);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 201",
+									"pm.test(\"Status code is 201\", () => {",
+									"  pm.response.to.have.status(201);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"// Remove '-' in protection-keys because of (apparent) parsing issue",
+									"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
+									"var jsonData = JSON.parse(strippedResponse);",
+									"",
+									"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
+									"",
+									"// console.log(pm.environment.get(\"keyId\"));",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CONVERSATION-ID",
+								"type": "text",
+								"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"attributes\": {\n                    \"ionic-embargo\": \"{{embargoDate}}\",\n                    \"ionic-expire\": \"{{embargoDate}}\",\n                    \"obligations\": {\n                        \"ionic-content-encrypt\": [\n                            \"allow\"\n                        ],\n                        \"ionic-offline-duration-seconds\": [\n                            \"3782520\"\n                        ],\n                        \"ionic-offline-enabled\": [\n                            \"false\"\n                        ],\n                        \"ionic-labeling-enabled\": [\n                            \"false\"\n                        ]\n                    }\n                }\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2.4",
+								"{{keyspace}}",
+								"keys",
+								"create"
+							]
+						},
+						"description": "KeysAPI Documentation:\nhttps://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/keysapi?at=develop\n\nObligations List:\nhttps://stash.in.ionicsecurity.com/projects/IP/repos/gyre/browse/policy/tests/testdata/obligations/list-obligations.json\n\nNOTE:\n    Obligation settings are overwirtten by Policy Obligations settings."
 					},
 					"response": []
 				},
