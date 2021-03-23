@@ -1,674 +1,1107 @@
 {
 	"info": {
-		"_postman_id": "b665d902-4993-489a-807b-5b7338740550",
+		"_postman_id": "b2860c4c-5237-45a1-976a-0ae23db18b8b",
 		"name": "Relability Test - Measurement Points",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Device: KeysAPI: Create Key",
-			"event": [
+			"name": "KeysAPI Tests",
+			"item": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// Use current date and time to crate a unique Policy ID",
-							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// Verify status code is 201",
-							"pm.test(\"Status code is 201\", () => {",
-							"  pm.response.to.have.status(201);",
-							"});",
-							"// Verify that reponse time is below threshold",
-							"pm.test(\"Response time is less than 500ms\", () => {",
-							"  pm.expect(pm.response.responseTime).to.be.below(500);",
-							"});",
-							"",
-							"// Remove '-' in protection-keys because of (apparent) parsing issue",
-							"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
-							"var jsonData = JSON.parse(strippedResponse);",
-							"",
-							"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
-							"",
-							"// console.log(pm.environment.get(\"keyId\"));",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
+					"name": "KNS: Get Tenant ID",
+					"event": [
 						{
-							"key": "token",
-							"value": "{{bearerToken}}",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"// Save Tenant ID",
+									"var jsonData = JSON.parse(responseBody);",
+									"pm.environment.set(\"tenantID\", jsonData.answers.tenantid);",
+									"// console.log(pm.environment.get(\"tenantID\"));"
+								],
+								"type": "text/javascript"
+							}
 						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "X-CONVERSATION-ID",
-						"type": "text",
-						"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"ref\": \"{{keyRef}}\"\n            }\n        ]\n    }\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
-					"protocol": "https",
-					"host": [
-						"{{systemURL}}"
 					],
-					"path": [
-						"v2.4",
-						"{{keyspace}}",
-						"keys",
-						"create"
-					]
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{systemURL}}/v2.4/kns/keyspaces/{{keyspace}}",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2.4",
+								"kns",
+								"keyspaces",
+								"{{keyspace}}"
+							]
+						},
+						"description": "KNS documentation: https://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/kns/keyspace.md?at=refs%2Fheads%2Fdevelop"
+					},
+					"response": []
 				},
-				"description": "https://dev.ionic.com/api/scim/create-user"
-			},
-			"response": []
-		},
-		{
-			"name": "Device: KeysAPI: Create Key w/Client and Mutable Attributes",
-			"event": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// Use current date and time to crate a unique Policy ID",
-							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// Verify status code is 201",
-							"pm.test(\"Status code is 201\", () => {",
-							"  pm.response.to.have.status(201);",
-							"});",
-							"// Verify that reponse time is below threshold",
-							"pm.test(\"Response time is less than 500ms\", () => {",
-							"  pm.expect(pm.response.responseTime).to.be.below(500);",
-							"});",
-							"",
-							"// Remove '-' in protection-keys because of (apparent) parsing issue",
-							"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
-							"var jsonData = JSON.parse(strippedResponse);",
-							"",
-							"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
-							"",
-							"// console.log(pm.environment.get(\"keyId\"));",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
+					"name": "Device: KeysAPI: BearerToken: Create Key",
+					"event": [
 						{
-							"key": "token",
-							"value": "{{bearerToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "X-CONVERSATION-ID",
-						"type": "text",
-						"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"ref\": \"{{keyRef}}\",\n                \"ClientAttrs\": \"NONE\",\n                \"MutableAttrs\": \"NONE\"\n            }\n        ]\n    }\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
-					"protocol": "https",
-					"host": [
-						"{{systemURL}}"
-					],
-					"path": [
-						"v2.4",
-						"{{keyspace}}",
-						"keys",
-						"create"
-					]
-				},
-				"description": "https://dev.ionic.com/api/scim/create-user"
-			},
-			"response": []
-		},
-		{
-			"name": "Device: KeysAPI: Create Key w/Attributes",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// Use current date and time to crate a unique Policy ID",
-							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// Verify status code is 201",
-							"pm.test(\"Status code is 201\", () => {",
-							"  pm.response.to.have.status(201);",
-							"});",
-							"// Verify that reponse time is below threshold",
-							"pm.test(\"Response time is less than 500ms\", () => {",
-							"  pm.expect(pm.response.responseTime).to.be.below(500);",
-							"});",
-							"",
-							"// Remove '-' in protection-keys because of (apparent) parsing issue",
-							"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
-							"var jsonData = JSON.parse(strippedResponse);",
-							"",
-							"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
-							"",
-							"// console.log(pm.environment.get(\"keyId\"));",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Policy ID",
+									"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
 						{
-							"key": "token",
-							"value": "{{bearerToken}}",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 201",
+									"pm.test(\"Status code is 201\", () => {",
+									"  pm.response.to.have.status(201);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"// Remove '-' in protection-keys because of (apparent) parsing issue",
+									"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
+									"var jsonData = JSON.parse(strippedResponse);",
+									"",
+									"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
+									"",
+									"// console.log(pm.environment.get(\"keyId\"));",
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "X-CONVERSATION-ID",
-						"type": "text",
-						"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0",
-						"disabled": true
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"ref\": \"{{keyRef}}\",\n                \"qty\": 1,\n                \"attributes\": {\n                    \"classification\": {\n                        \"val\": \"totally hush-hush\"\n                    },\n                    \"compartment\": [\n                        \"mortgage\",\n                        \"loan\"\n                    ]\n                }\n            },\n            {\n                \"ref\": \"{{keyRef}}+1\",\n                \"qty\": 1,\n                \"attributes\": {\n                    \"classification\": [\n                        \"proprietary\"\n                    ],\n                    \"map\": {\n                        \"val\": \"local\"\n                    }\n                }\n            }\n        ]\n    }\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
-					"protocol": "https",
-					"host": [
-						"{{systemURL}}"
 					],
-					"path": [
-						"v2.4",
-						"{{keyspace}}",
-						"keys",
-						"create"
-					]
-				},
-				"description": "https://dev.ionic.com/api/scim/create-user"
-			},
-			"response": []
-		},
-		{
-			"name": "Device: KeysAPI: Create Key w/External ID",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// Use current date and time to crate a unique Policy ID",
-							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());",
-							"",
-							"// encode the keyRef for External ID",
-							"pm.environment.set(\"externalId\", btoa(pm.environment.get(\"keyRef\")));",
-							"// print encoded string",
-							"console.log(pm.environment.get(\"externalId\"));"
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CONVERSATION-ID",
+								"type": "text",
+								"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0",
+								"disabled": true
+							}
 						],
-						"type": "text/javascript"
-					}
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"ref\": \"{{keyRef}}\"\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2.4",
+								"{{keyspace}}",
+								"keys",
+								"create"
+							]
+						},
+						"description": "https://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/keysapi?at=develop"
+					},
+					"response": []
 				},
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// Verify status code is 201",
-							"pm.test(\"Status code is 201\", () => {",
-							"  pm.response.to.have.status(201);",
-							"});",
-							"// Verify that reponse time is below threshold",
-							"pm.test(\"Response time is less than 500ms\", () => {",
-							"  pm.expect(pm.response.responseTime).to.be.below(500);",
-							"});",
-							"",
-							"// Remove '-' in protection-keys because of (apparent) parsing issue",
-							"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
-							"var jsonData = JSON.parse(strippedResponse);",
-							"",
-							"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
-							"",
-							"// console.log(pm.environment.get(\"keyId\"));",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
+					"name": "Device: KeysAPI: BasicAuth: Create Key",
+					"event": [
 						{
-							"key": "token",
-							"value": "{{bearerToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "X-CONVERSATION-ID",
-						"type": "text",
-						"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0",
-						"disabled": true
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"ref\": \"{{keyRef}}\",\n                \"qty\": 1,\n                \"attributes\": {\n                        \"ionic-external-id\": [\"{{externalId}}\"\n                    ]\n                }\n            },\n            {\n                \"ref\": \"{{keyRef}}+1\",\n                \"qty\": 1,\n                \"attributes\": {\n                    \"classification\": [\n                        \"proprietary\"\n                    ],\n                    \"map\": {\n                        \"val\": \"local\"\n                    }\n                }\n            }\n        ]\n    }\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
-					"protocol": "https",
-					"host": [
-						"{{systemURL}}"
-					],
-					"path": [
-						"v2.4",
-						"{{keyspace}}",
-						"keys",
-						"create"
-					]
-				},
-				"description": "https://dev.ionic.com/api/scim/create-user"
-			},
-			"response": []
-		},
-		{
-			"name": "Device: KeysAPI: Create Key w/Embargo",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// Use current date and time to crate a unique Policy ID",
-							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());",
-							"// Format date into YYYYMMDD",
-							"var x = new Date();",
-							"var y = x.getFullYear().toString();",
-							"var m = (x.getMonth() + 1).toString();",
-							"var d = x.getDate().toString();",
-							"// Pad day and month to two digits if only one digit",
-							"(d.length == 1) && (d = '0' + d);",
-							"(m.length == 1) && (m = '0' + m);",
-							"// Set formating with '-' to seperate date and time.",
-							"// Set time to midnight 00:00",
-							"var yyyymmdd = y + '-' + m + '-' + d + 'T' + '00:00:00Z';",
-							"pm.environment.set(\"embargoDate\", yyyymmdd);",
-							"// console.log(yyyymmdd);"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// Verify status code is 201",
-							"pm.test(\"Status code is 201\", () => {",
-							"  pm.response.to.have.status(201);",
-							"});",
-							"// Verify that reponse time is below threshold",
-							"pm.test(\"Response time is less than 500ms\", () => {",
-							"  pm.expect(pm.response.responseTime).to.be.below(500);",
-							"});",
-							"",
-							"// Remove '-' in protection-keys because of (apparent) parsing issue",
-							"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
-							"var jsonData = JSON.parse(strippedResponse);",
-							"",
-							"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
-							"",
-							"// console.log(pm.environment.get(\"keyId\"));",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Policy ID",
+									"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
 						{
-							"key": "token",
-							"value": "{{bearerToken}}",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 201",
+									"pm.test(\"Status code is 201\", () => {",
+									"  pm.response.to.have.status(201);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"// Remove '-' in protection-keys because of (apparent) parsing issue",
+									"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
+									"var jsonData = JSON.parse(strippedResponse);",
+									"",
+									"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
+									"",
+									"// console.log(pm.environment.get(\"keyId\"));",
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "X-CONVERSATION-ID",
-						"type": "text",
-						"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0",
-						"disabled": true
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"attributes\": {\n                    \"ionic-embargo\": \"embargoDate\"\n                }\n            }\n        ]\n    }\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
-					"protocol": "https",
-					"host": [
-						"{{systemURL}}"
 					],
-					"path": [
-						"v2.4",
-						"{{keyspace}}",
-						"keys",
-						"create"
-					]
-				},
-				"description": "https://dev.ionic.com/api/scim/create-user\n\nFrom John Ortega example: https://confluence.in.ionicsecurity.com/pages/viewpage.action?pageId=182714810"
-			},
-			"response": []
-		},
-		{
-			"name": "Device: KeysAPI: Fetch Key",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// Use current date and time to crate a unique Policy ID",
-							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CONVERSATION-ID",
+								"type": "text",
+								"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0",
+								"disabled": true
+							}
 						],
-						"type": "text/javascript"
-					}
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"ref\": \"{{keyRef}}\"\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2.4",
+								"{{keyspace}}",
+								"keys",
+								"create"
+							]
+						},
+						"description": "https://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/keysapi?at=develop"
+					},
+					"response": []
 				},
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// Verify status code is 200",
-							"pm.test(\"Status code is 200\", () => {",
-							"  pm.response.to.have.status(200);",
-							"});",
-							"// Verify that reponse time is below threshold",
-							"pm.test(\"Response time is less than 500ms\", () => {",
-							"  pm.expect(pm.response.responseTime).to.be.below(500);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
+					"name": "Device: KeysAPI: Create Key w/Immutable and Mutable Attributes",
+					"event": [
 						{
-							"key": "token",
-							"value": "{{bearerToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "X-CONVERSATION-ID",
-						"type": "text",
-						"value": "CID|NONVBE|60bd0ef6-5701-4311-6ff7-cb1230ef565a|INUp|1611354545121|2.4.0"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            \"{{keyId}}\"\n        ]\n    }\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/fetch",
-					"protocol": "https",
-					"host": [
-						"{{systemURL}}"
-					],
-					"path": [
-						"v2.4",
-						"{{keyspace}}",
-						"keys",
-						"fetch"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Device: KeysAPI: Fetch Key w/External ID",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// Use current date and time to crate a unique Policy ID",
-							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// Verify status code is 200",
-							"pm.test(\"Status code is 200\", () => {",
-							"  pm.response.to.have.status(200);",
-							"});",
-							"// Verify that reponse time is below threshold",
-							"pm.test(\"Response time is less than 500ms\", () => {",
-							"  pm.expect(pm.response.responseTime).to.be.below(500);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Policy ID",
+									"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
 						{
-							"key": "token",
-							"value": "{{bearerToken}}",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 201",
+									"pm.test(\"Status code is 201\", () => {",
+									"  pm.response.to.have.status(201);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"// Remove '-' in protection-keys because of (apparent) parsing issue",
+									"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
+									"var jsonData = JSON.parse(strippedResponse);",
+									"",
+									"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
+									"",
+									"// console.log(pm.environment.get(\"keyId\"));",
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "X-CONVERSATION-ID",
-						"type": "text",
-						"value": "CID|NONVBE|60bd0ef6-5701-4311-6ff7-cb1230ef565a|INUp|1611354545121|2.4.0",
-						"disabled": true
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"data\": {\n        \"protection-keys\": [],\n        \"protection-key-queries\": {\n            \"qref1\": {\n                \"ionic-external-id\": \"{{externalId}}\"\n            },\n            \"qref2\": {\n                \"ionic-external-id\": \"{{keyRef}}\"\n            }\n        }\n    }\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/fetch",
-					"protocol": "https",
-					"host": [
-						"{{systemURL}}"
 					],
-					"path": [
-						"v2.4",
-						"{{keyspace}}",
-						"keys",
-						"fetch"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Device: KeysAPI: Fetch Key w/External ID w/Qty",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// Use current date and time to crate a unique Policy ID",
-							"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CONVERSATION-ID",
+								"type": "text",
+								"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0"
+							}
 						],
-						"type": "text/javascript"
-					}
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"ref\": \"{{keyRef}}\",\n                \"ClientAttrs\": \"NONE\",\n                \"MutableAttrs\": \"NONE\"\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2.4",
+								"{{keyspace}}",
+								"keys",
+								"create"
+							]
+						},
+						"description": "https://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/keysapi?at=develop\n\nConditional Protection:\n- lwop = prefer (Immutable ClientAttrs)\n- need to add 'allow' and 'always'"
+					},
+					"response": []
 				},
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// Verify status code is 200",
-							"pm.test(\"Status code is 200\", () => {",
-							"  pm.response.to.have.status(200);",
-							"});",
-							"// Verify that reponse time is below threshold",
-							"pm.test(\"Response time is less than 500ms\", () => {",
-							"  pm.expect(pm.response.responseTime).to.be.below(500);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
+					"name": "Device: KeysAPI: Create Key w/External ID",
+					"event": [
 						{
-							"key": "token",
-							"value": "{{bearerToken}}",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Policy ID",
+									"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());",
+									"",
+									"// encode the keyRef for External ID",
+									"pm.environment.set(\"externalId\", btoa(pm.environment.get(\"keyRef\")));",
+									"// print encoded string",
+									"console.log(pm.environment.get(\"externalId\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 201",
+									"pm.test(\"Status code is 201\", () => {",
+									"  pm.response.to.have.status(201);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"// Remove '-' in protection-keys because of (apparent) parsing issue",
+									"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
+									"var jsonData = JSON.parse(strippedResponse);",
+									"",
+									"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
+									"",
+									"// console.log(pm.environment.get(\"keyId\"));",
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "X-CONVERSATION-ID",
-						"type": "text",
-						"value": "CID|NONVBE|60bd0ef6-5701-4311-6ff7-cb1230ef565a|INUp|1611354545121|2.4.0",
-						"disabled": true
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"data\": {\n        \"protection-keys\": [],\n        \"protection-key-queries\": {\n            \"qref1\": {\n                \"ionic-external-id\": \"{{externalId}}\",\n                \"qty\": 10\n            },\n            \"qref2\": {\n                \"ionic-external-id\": \"{{keyRef}}\"\n            }\n        }\n    }\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/fetch",
-					"protocol": "https",
-					"host": [
-						"{{systemURL}}"
 					],
-					"path": [
-						"v2.4",
-						"{{keyspace}}",
-						"keys",
-						"fetch"
-					]
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CONVERSATION-ID",
+								"type": "text",
+								"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"ref\": \"{{keyRef}}\",\n                \"qty\": 1,\n                \"attributes\": {\n                        \"ionic-external-id\": [\"{{externalId}}\"\n                    ]\n                }\n            },\n            {\n                \"ref\": \"{{keyRef}}+1\",\n                \"qty\": 1,\n                \"attributes\": {\n                    \"classification\": [\n                        \"proprietary\"\n                    ],\n                    \"map\": {\n                        \"val\": \"local\"\n                    }\n                }\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2.4",
+								"{{keyspace}}",
+								"keys",
+								"create"
+							]
+						},
+						"description": "https://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/keysapi?at=develop"
+					},
+					"response": []
+				},
+				{
+					"name": "Device: KeysAPI: Create Key w/External ID (Single)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Policy ID",
+									"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());",
+									"",
+									"// encode the keyRef for External ID",
+									"pm.environment.set(\"externalId\", btoa(pm.environment.get(\"keyRef\")));",
+									"// print encoded string",
+									"console.log(pm.environment.get(\"externalId\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 201",
+									"pm.test(\"Status code is 201\", () => {",
+									"  pm.response.to.have.status(201);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"// Remove '-' in protection-keys because of (apparent) parsing issue",
+									"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
+									"var jsonData = JSON.parse(strippedResponse);",
+									"",
+									"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
+									"",
+									"// console.log(pm.environment.get(\"keyId\"));",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CONVERSATION-ID",
+								"type": "text",
+								"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"ref\": \"{{keyRef}}\",\n                \"qty\": 1,\n                \"attributes\": {\n                        \"ionic-external-id\": [\"{{externalId}}\"\n                    ]\n                }\n            },\n            {\n                \"ref\": \"{{keyRef}}+1\",\n                \"qty\": 1,\n                \"attributes\": {\n                    \"classification\": [\n                        \"proprietary\"\n                    ],\n                    \"map\": {\n                        \"val\": \"local\"\n                    }\n                }\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2.4",
+								"{{keyspace}}",
+								"keys",
+								"create"
+							]
+						},
+						"description": "https://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/keysapi?at=develop"
+					},
+					"response": []
+				},
+				{
+					"name": "Device: KeysAPI: Create Key w/External ID Hardcoded ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Policy ID",
+									"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());",
+									"",
+									"// encode the keyRef for External ID",
+									"pm.environment.set(\"externalId\", btoa(pm.environment.get(\"keyRef\")));",
+									"// print encoded string",
+									"console.log(pm.environment.get(\"externalId\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 201",
+									"pm.test(\"Status code is 201\", () => {",
+									"  pm.response.to.have.status(201);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"// Remove '-' in protection-keys because of (apparent) parsing issue",
+									"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
+									"var jsonData = JSON.parse(strippedResponse);",
+									"",
+									"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
+									"",
+									"// console.log(pm.environment.get(\"keyId\"));",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CONVERSATION-ID",
+								"type": "text",
+								"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"ref\": \"{{keyRef}}\",\n                \"qty\": 1,\n                \"attributes\": {\n                        \"ionic-external-id\": [\"{{externalId}}\"\n                    ]\n                }\n            },\n            {\n                \"ref\": \"{{keyRef}}+1\",\n                \"qty\": 1,\n                \"attributes\": {\n                    \"classification\": [\n                        \"proprietary\"\n                    ],\n                    \"map\": {\n                        \"val\": \"local\"\n                    }\n                }\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2.4",
+								"{{keyspace}}",
+								"keys",
+								"create"
+							]
+						},
+						"description": "https://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/keysapi?at=develop"
+					},
+					"response": []
+				},
+				{
+					"name": "Device: KeysAPI: Create Key w/Embargo",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Policy ID",
+									"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());",
+									"// Format date into YYYYMMDD",
+									"var x = new Date();",
+									"var y = x.getFullYear().toString();",
+									"var m = (x.getMonth() + 1).toString();",
+									"var d = x.getDate().toString();",
+									"// Pad day and month to two digits if only one digit",
+									"(d.length == 1) && (d = '0' + d);",
+									"(m.length == 1) && (m = '0' + m);",
+									"// Set formating with '-' to seperate date and time.",
+									"// Set time to midnight 00:00",
+									"var yyyymmdd = y + '-' + m + '-' + d + 'T' + '00:00:00Z';",
+									"pm.environment.set(\"embargoDate\", yyyymmdd);",
+									"// console.log(yyyymmdd);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 201",
+									"pm.test(\"Status code is 201\", () => {",
+									"  pm.response.to.have.status(201);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"// Remove '-' in protection-keys because of (apparent) parsing issue",
+									"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
+									"var jsonData = JSON.parse(strippedResponse);",
+									"",
+									"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
+									"",
+									"// console.log(pm.environment.get(\"keyId\"));",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CONVERSATION-ID",
+								"type": "text",
+								"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"attributes\": {\n                    \"ionic-embargo\": \"embargoDate\"\n                }\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2.4",
+								"{{keyspace}}",
+								"keys",
+								"create"
+							]
+						},
+						"description": "https://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/keysapi?at=develop"
+					},
+					"response": []
+				},
+				{
+					"name": "Device: KeysAPI: Create Key w/Expire",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Policy ID",
+									"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());",
+									"// Format date into YYYYMMDD",
+									"var x = new Date();",
+									"var y = x.getFullYear().toString();",
+									"var m = (x.getMonth() + 1).toString();",
+									"var d = x.getDate().toString();",
+									"// Pad day and month to two digits if only one digit",
+									"(d.length == 1) && (d = '0' + d);",
+									"(m.length == 1) && (m = '0' + m);",
+									"// Set formating with '-' to seperate date and time.",
+									"// Set time to midnight 00:00",
+									"var yyyymmdd = y + '-' + m + '-' + d + 'T' + '00:00:00Z';",
+									"pm.environment.set(\"embargoDate\", yyyymmdd);",
+									"// console.log(yyyymmdd);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 201",
+									"pm.test(\"Status code is 201\", () => {",
+									"  pm.response.to.have.status(201);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"// Remove '-' in protection-keys because of (apparent) parsing issue",
+									"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
+									"var jsonData = JSON.parse(strippedResponse);",
+									"",
+									"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
+									"",
+									"// console.log(pm.environment.get(\"keyId\"));",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CONVERSATION-ID",
+								"type": "text",
+								"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"attributes\": {\n                    \"ionic-embargo\": \"embargoDate\"\n                }\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2.4",
+								"{{keyspace}}",
+								"keys",
+								"create"
+							]
+						},
+						"description": "https://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/keysapi?at=develop"
+					},
+					"response": []
+				},
+				{
+					"name": "Device: KeysAPI: Create Key w/Obligations",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Policy ID",
+									"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());",
+									"// Format date into YYYYMMDD",
+									"var x = new Date();",
+									"var y = x.getFullYear().toString();",
+									"var m = (x.getMonth() + 1).toString();",
+									"var d = x.getDate().toString();",
+									"// Pad day and month to two digits if only one digit",
+									"(d.length == 1) && (d = '0' + d);",
+									"(m.length == 1) && (m = '0' + m);",
+									"// Set formating with '-' to seperate date and time.",
+									"// Set time to midnight 00:00",
+									"var yyyymmdd = y + '-' + m + '-' + d + 'T' + '00:00:00Z';",
+									"pm.environment.set(\"embargoDate\", yyyymmdd);",
+									"// console.log(yyyymmdd);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 201",
+									"pm.test(\"Status code is 201\", () => {",
+									"  pm.response.to.have.status(201);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"// Remove '-' in protection-keys because of (apparent) parsing issue",
+									"var strippedResponse = responseBody.replace (\"protection-keys\", \"protectionKeys\");",
+									"var jsonData = JSON.parse(strippedResponse);",
+									"",
+									"pm.environment.set(\"keyId\", jsonData.data.protectionKeys[0].id);",
+									"",
+									"// console.log(pm.environment.get(\"keyId\"));",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CONVERSATION-ID",
+								"type": "text",
+								"value": "CID|NONVBE|713c456c-04b8-4407-596d-969dc468c38b|{{keyspace}}|1424977567501|2.4.0",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            {\n                \"qty\": 1,\n                \"attributes\": {\n                    \"ionic-embargo\": \"embargoDate\"\n                }\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2.4",
+								"{{keyspace}}",
+								"keys",
+								"create"
+							]
+						},
+						"description": "KeysAPI Documentation:\nhttps://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/keysapi?at=develop\n\nObligations List:\nhttps://stash.in.ionicsecurity.com/projects/IP/repos/gyre/browse/policy/tests/testdata/obligations/list-obligations.json\n\nNOTE:\n    Conditional Protection (allow, prefer, always) missing from Body\n    Added to Immutable attributes Create POST"
+					},
+					"response": []
+				},
+				{
+					"name": "Device: KeysAPI: Fetch Key",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Policy ID",
+									"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CONVERSATION-ID",
+								"type": "text",
+								"value": "CID|NONVBE|60bd0ef6-5701-4311-6ff7-cb1230ef565a|INUp|1611354545121|2.4.0"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"protection-keys\": [\n            \"{{keyId}}\"\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/fetch",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2.4",
+								"{{keyspace}}",
+								"keys",
+								"fetch"
+							]
+						},
+						"description": "https://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/keysapi?at=develop"
+					},
+					"response": []
+				},
+				{
+					"name": "Device: KeysAPI: Fetch Key w/External ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Policy ID",
+									"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CONVERSATION-ID",
+								"type": "text",
+								"value": "CID|NONVBE|60bd0ef6-5701-4311-6ff7-cb1230ef565a|INUp|1611354545121|2.4.0",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"protection-keys\": [],\n        \"protection-key-queries\": {\n            \"qref1\": {\n                \"ionic-external-id\": \"{{externalId}}\"\n            },\n            \"qref2\": {\n                \"ionic-external-id\": \"{{keyRef}}\"\n            }\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/fetch",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2.4",
+								"{{keyspace}}",
+								"keys",
+								"fetch"
+							]
+						},
+						"description": "https://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/keysapi?at=develop"
+					},
+					"response": []
+				},
+				{
+					"name": "Device: KeysAPI: Fetch Key w/External ID w/Qty",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Policy ID",
+									"pm.environment.set(\"keyRef\", 'Daves Key Request - ' + new Date().toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-CONVERSATION-ID",
+								"type": "text",
+								"value": "CID|NONVBE|60bd0ef6-5701-4311-6ff7-cb1230ef565a|INUp|1611354545121|2.4.0",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"protection-keys\": [],\n        \"protection-key-queries\": {\n            \"qref1\": {\n                \"ionic-external-id\": \"{{externalId}}\",\n                \"qty\": 10\n            },\n            \"qref2\": {\n                \"ionic-external-id\": \"{{keyRef}}\"\n            }\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/fetch",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2.4",
+								"{{keyspace}}",
+								"keys",
+								"fetch"
+							]
+						},
+						"description": "https://stash.in.ionicsecurity.com/projects/DOC/repos/api-spec/browse/v2.4/keysapi?at=develop"
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "SCIM: List Scopes",
@@ -963,49 +1396,6 @@
 			"response": []
 		},
 		{
-			"name": "KNS: Get KNS",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// Verify status code is 200",
-							"pm.test(\"Status code is 200\", () => {",
-							"  pm.response.to.have.status(200);",
-							"});",
-							"// Verify that reponse time is below threshold",
-							"pm.test(\"Response time is less than 500ms\", () => {",
-							"  pm.expect(pm.response.responseTime).to.be.below(500);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://{{systemURL}}/v2.4/kns/keyspaces/{{keyspace}}",
-					"protocol": "https",
-					"host": [
-						"{{systemURL}}"
-					],
-					"path": [
-						"v2.4",
-						"kns",
-						"keyspaces",
-						"{{keyspace}}"
-					]
-				},
-				"description": "https://dev.ionic.com/api/scim/create-user"
-			},
-			"response": []
-		},
-		{
 			"name": "Policies: List Policies",
 			"event": [
 				{
@@ -1136,6 +1526,147 @@
 					]
 				},
 				"description": "NOTE: This API request was previously known as \"logstore\"\n\nhttps://dev.ionic.com/api/download/download-records"
+			},
+			"response": []
+		},
+		{
+			"name": "Device: KeysAPI: HMAC: Create (work in progress)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function getPath(url) {",
+							"    var pathRegex = /.+?\\:\\/\\/.+?(\\/.+?)(?:#|\\?|$)/;",
+							"    var result = url.match(pathRegex);",
+							"    return result && result.length > 1 ? result[1] : ''; ",
+							"}",
+							" ",
+							"function getQueryString(url) {",
+							"    var arrSplit = url.split('?');",
+							"    return arrSplit.length > 1 ? url.substring(url.indexOf('?')+1) : ''; ",
+							"}",
+							" ",
+							"function getAuthHeader(httpMethod, requestUrl, requestBody) {",
+							"    var CLIENT_KEY = pm.environment.get(\"hmacID\");",
+							"    var SECRET_KEY = pm.environment.get(\"hmacSecret\");",
+							"    var AUTH_TYPE = 'IONIC';",
+							"         ",
+							"    var requestPath = getPath(requestUrl);",
+							"    var queryString = getQueryString(requestUrl);",
+							"    if (httpMethod == 'GET' || !requestBody) {",
+							"        requestBody = ''; ",
+							"    } else {",
+							"        requestBody = JSON.stringify(requestBody);",
+							"    }   ",
+							"         ",
+							"    var hashedPayload = CryptoJS.enc.Hex.stringify(CryptoJS.SHA512(requestBody));",
+							"    // var hashedPayload = CryptoJS.enc.Hex.stringify(CryptoJS.enc.Base64(requestBody));",
+							"    console.log('requestBody', 'request body', requestBody);",
+							"    console.log('hashedPayload', hashedPayload);",
+							"         ",
+							"    var timestamp = new Date().toISOString().split('.')[0]+\"Z\";",
+							"    var requestData = [httpMethod, requestPath, queryString, timestamp, hashedPayload].join(\"\\n\");",
+							"    var hashedRequestData = CryptoJS.enc.Hex.stringify(CryptoJS.SHA512(requestData));",
+							"   // var hashedRequestData = CryptoJS.enc.Hex.stringify(btoa(requestData));",
+							"         ",
+							"    var hmacDigest = CryptoJS.enc.Hex.stringify(CryptoJS.HmacSHA512(hashedRequestData, SECRET_KEY));",
+							"  //  var hmacDigest = CryptoJS.enc.Hex.stringify(btoa(hashedRequestData, SECRET_KEY));",
+							"  //  var authHeader = AUTH_TYPE + ' timestamp=' + timestamp + \", client=\" + CLIENT_KEY + ', signature=' + hmacDigest;",
+							"    var authHeader = AUTH_TYPE + ' ' + CLIENT_KEY + ':' + hmacDigest;",
+							"    return authHeader;",
+							"}",
+							" ",
+							"postman.setEnvironmentVariable('hmacAuthHeader', getAuthHeader(request['method'], request['url'], request['data']));",
+							"",
+							"console.log('hmacID', pm.environment.get(\"hmacID\"));",
+							"console.log('hmacSecret', pm.environment.get(\"hmacSecret\"));",
+							"console.log('hmacAuthHeader', pm.environment.get(\"hmacAuthHeader\"));",
+							"",
+							"// Format date into Day, day MONTH year time gmt-offset",
+							"/* var arr = Date().match(/\\S+/gi)",
+							"console.log(arr[0] + ', ' + arr[2] + ' ' + arr[1] + ' ' + arr[3] + ' ' + arr[4] + ' ' + arr[5])",
+							"console.log(arr[0]);",
+							"console.log(arr[1]);",
+							"console.log(arr[2]);",
+							"console.log(arr[3]);",
+							"console.log(arr[4]);",
+							"console.log(arr[5]);",
+							"console.log(arr[6]);",
+							"console.log(arr[7]);",
+							"console.log(Date());",
+							"*/"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "User-Agent",
+						"value": "python-requests/2.24.0"
+					},
+					{
+						"key": "Accept",
+						"value": "/"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"key": "X-Auth-Tenant-Id",
+						"value": "{{tenantID}}"
+					},
+					{
+						"key": "X-Conversation-Id",
+						"value": "CID|02f4de0f-12ee-11eb-85b9-185e0faad5a6",
+						"disabled": true
+					},
+					{
+						"key": "Content-Length",
+						"value": "68"
+					},
+					{
+						"key": "Authorization",
+						"value": "IONIC 5f84a5d9f085880768ff07f5:mJimN1KElK5OQNqO+zkdWizsIznzjiQytqQAW8zubWc="
+					},
+					{
+						"key": "Date",
+						"value": "Wed Mar 10 2021 15:41:45 +0000"
+					},
+					{
+						"key": "Content-MD5",
+						"value": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json;charset=UTF-8"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"data\": {\"protection-keys\": [\n{\"qty\": 1, \"ref\": \"{{keyRef}}\"}\n]}}"
+				},
+				"url": {
+					"raw": "https://{{systemURL}}/v2.4/{{keyspace}}/keys/create",
+					"protocol": "https",
+					"host": [
+						"{{systemURL}}"
+					],
+					"path": [
+						"v2.4",
+						"{{keyspace}}",
+						"keys",
+						"create"
+					]
+				},
+				"description": "Ionic documentation: https://dev.ionic.com/api/usage/authentication\nOriginal Postman code from: https://gist.github.com/ravikiranj/d056216c0cee8cdbbdd1336ec227d6f6"
 			},
 			"response": []
 		}
