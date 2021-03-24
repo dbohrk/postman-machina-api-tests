@@ -1740,240 +1740,685 @@
 			]
 		},
 		{
-			"name": "Data Markings: Create Data Marking",
-			"event": [
+			"name": "Data Marking Tests",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// Verify status code is 201",
-							"pm.test(\"Status code is 201\", () => {",
-							"  pm.response.to.have.status(201);",
-							"});",
-							"// Verify that reponse time is below threshold",
-							"pm.test(\"Response time is less than 500ms\", () => {",
-							"  pm.expect(pm.response.responseTime).to.be.below(500);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// Use current date and time to crate a unique Data Marking Name",
-							"pm.environment.set(\"dataMarkingName\", 'Custom Data Marking - ' + new Date().toISOString());",
-							"",
-							"",
-							"/*",
-							"//",
-							"// This was the former method incementing a counter to make a unique value",
-							"// May be useful in other Pre-request scripts",
-							"//",
-							"// Use dataMarkingCount to store the Data Marking number",
-							"dataMarkingCount = pm.environment.get(\"dataMarkingCount\");",
-							"// Check if dataMarkingCount is already defined ",
-							"if (dataMarkingCount) {",
-							"    dataMarkingCount++; // increment",
-							"} else {",
-							"    dataMarkingCount = 1; // start from 1",
-							"}",
-							"",
-							"// Build and Store Data Marking Name",
-							"currentDataMarkingName = pm.environment.get(\"dataMarkingName\") + dataMarkingCount;",
-							"pm.environment.set(\"currentDataMarkingName\", currentDataMarkingName);",
-							"// Store current count",
-							"pm.environment.set(\"dataMarkingCount\", dataMarkingCount);",
-							"",
-							"// console.log(\"Current Data Marking Name:\" + pm.environment.get(\"currentDataMarkingName\"));",
-							"// console.log(\"Data Marking Count: \" + pm.environment.get(\"dataMarkingCount\"));",
-							"*/"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "oauth2",
-					"oauth2": [
+					"name": "Data Markings: Create Data Marking",
+					"event": [
 						{
-							"key": "accessToken",
-							"value": "{{bearerToken}}",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 201",
+									"pm.test(\"Status code is 201\", () => {",
+									"  pm.response.to.have.status(201);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"console.log(jsonData.id)",
+									"pm.environment.set(\"markingID\", jsonData.id);",
+									"console.log(pm.environment.get(\"markingID\"));"
+								],
+								"type": "text/javascript"
+							}
 						},
 						{
-							"key": "addTokenTo",
-							"value": "header",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Data Marking Name",
+									"pm.environment.set(\"markingName\", 'Custom Data Marking - ' + new Date().toISOString());",
+									"",
+									"",
+									"/*",
+									"//",
+									"// This was the former method incementing a counter to make a unique value",
+									"// May be useful in other Pre-request scripts",
+									"//",
+									"// Use dataMarkingCount to store the Data Marking number",
+									"dataMarkingCount = pm.environment.get(\"dataMarkingCount\");",
+									"// Check if dataMarkingCount is already defined ",
+									"if (dataMarkingCount) {",
+									"    dataMarkingCount++; // increment",
+									"} else {",
+									"    dataMarkingCount = 1; // start from 1",
+									"}",
+									"",
+									"// Build and Store Data Marking Name",
+									"currentDataMarkingName = pm.environment.get(\"dataMarkingName\") + dataMarkingCount;",
+									"pm.environment.set(\"currentDataMarkingName\", currentDataMarkingName);",
+									"// Store current count",
+									"pm.environment.set(\"dataMarkingCount\", dataMarkingCount);",
+									"",
+									"// console.log(\"Current Data Marking Name:\" + pm.environment.get(\"currentDataMarkingName\"));",
+									"// console.log(\"Data Marking Count: \" + pm.environment.get(\"dataMarkingCount\"));",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
 						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"name\": \"{{dataMarkingName}}\",\n    \"public\": true,\n    \"adminOnly\": true,\n    \"defaultValue\": \"important\",\n    \"detail\": {\n        \"dataType\": \"string\",\n        \"description\": \"Custom corporate marking.\",\n        \"values\": [\n            {\n                \"description\": \"An important item\",\n                \"name\": \"important\"\n            }\n        ]\n    }\n}"
-				},
-				"url": {
-					"raw": "https://{{systemURL}}/v2/{{tenantID}}/markings",
-					"protocol": "https",
-					"host": [
-						"{{systemURL}}"
 					],
-					"path": [
-						"v2",
-						"{{tenantID}}",
-						"markings"
-					],
-					"query": [
-						{
-							"key": "name",
-							"value": "",
-							"description": "Return markings that match by name. 'or' can be used",
-							"disabled": true
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
 						},
-						{
-							"key": "public",
-							"value": "",
-							"description": "If true, return markings that are flagged as public and visible to Ionic clients.",
-							"disabled": true
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{markingName}}\",\n    \"public\": true,\n    \"adminOnly\": true,\n    \"defaultValue\": \"important\",\n    \"detail\": {\n        \"dataType\": \"string\",\n        \"description\": \"Custom corporate marking.\",\n        \"values\": [\n            {\n                \"description\": \"An important item\",\n                \"name\": \"important\"\n            }\n        ]\n    }\n}"
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/markings",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"markings"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "",
+									"description": "Return markings that match by name. 'or' can be used",
+									"disabled": true
+								},
+								{
+									"key": "public",
+									"value": "",
+									"description": "If true, return markings that are flagged as public and visible to Ionic clients.",
+									"disabled": true
+								}
+							]
 						}
-					]
+					},
+					"response": []
+				},
+				{
+					"name": "Data Markings: List Data Markings",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"// console.log(jsonData.Resources[0].id)",
+									"pm.environment.set(\"markingID\", jsonData.Resources[0].id);",
+									"console.log(pm.environment.get(\"markingID\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/markings?limit=1&skip=0",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"markings"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "name",
+									"value": "",
+									"description": "Return markings that match by name. 'or' can be used",
+									"disabled": true
+								},
+								{
+									"key": "public",
+									"value": "",
+									"description": "If true, return markings that are flagged as public and visible to Ionic clients.",
+									"disabled": true
+								}
+							]
+						},
+						"description": "https://dev.ionic.com/api/markings/list-data-markings"
+					},
+					"response": []
+				},
+				{
+					"name": "Data Markings: Fetch Data Marking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Roles/{{roleID}}",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Roles",
+								"{{roleID}}"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				},
+				{
+					"name": "Data Markings: Delete Data Marking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 204",
+									"pm.test(\"Status code is 204\", () => {",
+									"  pm.response.to.have.status(204);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/markings/{{markingID}}",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"markings",
+								"{{markingID}}"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Data Markings: List Data Markings",
-			"event": [
+			"name": "Policy Tests",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// Verify status code is 200",
-							"pm.test(\"Status code is 200\", () => {",
-							"  pm.response.to.have.status(200);",
-							"});",
-							"// Verify that reponse time is below threshold",
-							"pm.test(\"Response time is less than 500ms\", () => {",
-							"  pm.expect(pm.response.responseTime).to.be.below(500);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "oauth2",
-					"oauth2": [
+					"name": "Policies: Create Policy (Allow Access for Data Creator)",
+					"event": [
 						{
-							"key": "accessToken",
-							"value": "{{bearerToken}}",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"// console.log(jsonData.id)",
+									"// NOTE: The text name used to Create the Policy in policyID is overwritten",
+									"// with the id number of the created Policy becuase they use the same identifer",
+									"pm.environment.set(\"policyID\", jsonData.id);",
+									"console.log(pm.environment.get(\"policyID\"));"
+								],
+								"type": "text/javascript"
+							}
 						},
 						{
-							"key": "addTokenTo",
-							"value": "header",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Data Marking Name",
+									"pm.environment.set(\"policyID\", 'Allow All Policy - ' + new Date().toISOString());"
+								],
+								"type": "text/javascript"
+							}
 						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://{{systemURL}}/v2/{{tenantID}}/markings?limit=1&skip=0",
-					"protocol": "https",
-					"host": [
-						"{{systemURL}}"
 					],
-					"path": [
-						"v2",
-						"{{tenantID}}",
-						"markings"
-					],
-					"query": [
-						{
-							"key": "limit",
-							"value": "1"
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
 						},
-						{
-							"key": "skip",
-							"value": "0"
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"Published\",\n    \"enabled\": true,\n    \"policyId\": \"{{policyID}}\",\n    \"description\": \"All data.\",\n    \"ruleCombiningAlgId\": \"deny-overrides\",\n    \"rules\": [\n        {\n            \"ruleId\": \"0ec5\",\n            \"effect\": \"Permit\",\n            \"description\": \"Allow access when user is the data creator.\",\n            \"condition\": {\n                \"functionId\": \"string-equal\",\n                \"args\": [\n                    {\n                        \"category\": \"resource\",\n                        \"id\": \"created-user-id\"\n                    },\n                    {\n                        \"category\": \"subject\",\n                        \"id\": \"subject-id\"\n                    }\n                ]\n            }\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
-						{
-							"key": "name",
-							"value": "",
-							"description": "Return markings that match by name. 'or' can be used",
-							"disabled": true
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/policies",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"policies"
+							]
 						},
-						{
-							"key": "public",
-							"value": "",
-							"description": "If true, return markings that are flagged as public and visible to Ionic clients.",
-							"disabled": true
-						}
-					]
+						"description": "https://dev.ionic.com/api/policies/list-policies"
+					},
+					"response": []
 				},
-				"description": "https://dev.ionic.com/api/markings/list-data-markings"
-			},
-			"response": []
-		},
-		{
-			"name": "Policies: List Policies",
-			"event": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// Verify status code is 200",
-							"pm.test(\"Status code is 200\", () => {",
-							"  pm.response.to.have.status(200);",
-							"});",
-							"// Verify that reponse time is below threshold",
-							"pm.test(\"Response time is less than 500ms\", () => {",
-							"  pm.expect(pm.response.responseTime).to.be.below(500);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "oauth2",
-					"oauth2": [
+					"name": "Policies: Create Policy (With Obligations)",
+					"event": [
 						{
-							"key": "accessToken",
-							"value": "{{bearerToken}}",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"// console.log(jsonData.id)",
+									"// NOTE: The text name used to Create the Policy in policyID is overwritten",
+									"// with the id number of the created Policy becuase they use the same identifer",
+									"pm.environment.set(\"policyID\", jsonData.id);",
+									"console.log(pm.environment.get(\"policyID\"));"
+								],
+								"type": "text/javascript"
+							}
 						},
 						{
-							"key": "addTokenTo",
-							"value": "header",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Data Marking Name",
+									"pm.environment.set(\"policyID\", 'Obligations Policy - ' + new Date().toISOString());"
+								],
+								"type": "text/javascript"
+							}
 						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://{{systemURL}}/v2/{{tenantID}}/policies",
-					"protocol": "https",
-					"host": [
-						"{{systemURL}}"
 					],
-					"path": [
-						"v2",
-						"{{tenantID}}",
-						"policies"
-					]
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"Published\",\n    \"enabled\": true,\n    \"policyId\": \"{{policyID}}\",\n    \"description\": \"{{policyID}}.\",\n    \"ruleCombiningAlgId\": \"deny-overrides\",\n    \"target\": {\n        \"condition\": {\n            \"functionId\": \"string-at-least-one-member-of\",\n            \"args\": [\n                {\n                    \"dataType\": \"string\",\n                    \"value\": [\n                        \"{{policyID}}\"\n                    ]\n                },\n                {\n                    \"category\": \"resource\",\n                    \"id\": \"{{policyID}}\"\n                }\n            ]\n        }\n    },\n    \"rules\": null,\n    \"obligationExpressions\": [\n        {\n            \"obligationId\": \"offline-key-storage\",\n            \"appliesTo\": \"Permit\",\n            \"attributes\": [\n                {\n                    \"id\": \"ionic-offline-enabled\",\n                    \"attributeValue\": {\n                        \"dataType\": \"string\",\n                        \"value\": \"true\"\n                    }\n                },\n                {\n                    \"id\": \"ionic-offline-duration-seconds\",\n                    \"attributeValue\": {\n                        \"dataType\": \"integer\",\n                        \"value\": 3717720\n                    }\n                }\n            ]\n        },\n        {\n            \"obligationId\": \"conditional-protection\",\n            \"appliesTo\": \"Permit\",\n            \"attributes\": [\n                {\n                    \"id\": \"ionic-content-encrypt\",\n                    \"attributeValue\": {\n                        \"dataType\": \"string\",\n                        \"value\": \"always\"\n                    }\n                }\n            ]\n        },\n        {\n            \"obligationId\": \"labeling\",\n            \"appliesTo\": \"Permit\",\n            \"attributes\": [\n                {\n                    \"id\": \"ionic-labeling-enabled\",\n                    \"attributeValue\": {\n                        \"dataType\": \"string\",\n                        \"value\": \"true\"\n                    }\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/policies",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"policies"
+							]
+						},
+						"description": "https://dev.ionic.com/api/policies/list-policies"
+					},
+					"response": []
 				},
-				"description": "https://dev.ionic.com/api/policies/list-policies"
-			},
-			"response": []
+				{
+					"name": "Policies: List Policies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/policies",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"policies"
+							]
+						},
+						"description": "https://dev.ionic.com/api/policies/list-policies"
+					},
+					"response": []
+				},
+				{
+					"name": "Policies: Fetch Policy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 204",
+									"pm.test(\"Status code is 204\", () => {",
+									"  pm.response.to.have.status(204);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/policies/{{policyID}}",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"policies",
+								"{{policyID}}"
+							]
+						},
+						"description": "https://dev.ionic.com/api/policies/list-policies"
+					},
+					"response": []
+				},
+				{
+					"name": "Policies: Delete Poicy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 204",
+									"pm.test(\"Status code is 204\", () => {",
+									"  pm.response.to.have.status(204);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/policies/{{policyID}}",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"policies",
+								"{{policyID}}"
+							]
+						},
+						"description": "https://dev.ionic.com/api/policies/list-policies"
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "Download API: Download Records",
