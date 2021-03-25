@@ -2135,6 +2135,79 @@
 					"response": []
 				},
 				{
+					"name": "Policies: Update Policy (Allow Access for Data Creator)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 204",
+									"pm.test(\"Status code is 204\", () => {",
+									"  pm.response.to.have.status(204);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"Published\",\n    \"enabled\": true,\n    \"policyId\": \"Updated Policy\",\n    \"description\": \"All data.\",\n    \"ruleCombiningAlgId\": \"deny-overrides\",\n    \"rules\": [\n        {\n            \"ruleId\": \"0ec5\",\n            \"effect\": \"Permit\",\n            \"description\": \"UPDATED: Allow access when user is the data creator.\",\n            \"condition\": {\n                \"functionId\": \"string-equal\",\n                \"args\": [\n                    {\n                        \"category\": \"resource\",\n                        \"id\": \"created-user-id\"\n                    },\n                    {\n                        \"category\": \"subject\",\n                        \"id\": \"subject-id\"\n                    }\n                ]\n            }\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/policies/{{policyID}}",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"policies",
+								"{{policyID}}"
+							]
+						},
+						"description": "https://dev.ionic.com/api/policies/list-policies"
+					},
+					"response": []
+				},
+				{
 					"name": "Policies: Create Policy (With Obligations)",
 					"event": [
 						{
@@ -2209,6 +2282,79 @@
 								"v2",
 								"{{tenantID}}",
 								"policies"
+							]
+						},
+						"description": "https://dev.ionic.com/api/policies/list-policies"
+					},
+					"response": []
+				},
+				{
+					"name": "Policies: Update Policy (With Obligations)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 204",
+									"pm.test(\"Status code is 204\", () => {",
+									"  pm.response.to.have.status(204);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"Published\",\n    \"enabled\": true,\n    \"policyId\": \"Updated Policy\",\n    \"description\": \"All data.\",\n    \"ruleCombiningAlgId\": \"deny-overrides\",\n    \"rules\": [\n        {\n            \"ruleId\": \"0ec5\",\n            \"effect\": \"Permit\",\n            \"description\": \"UPDATED: Allow access when user is the data creator.\",\n            \"condition\": {\n                \"functionId\": \"string-equal\",\n                \"args\": [\n                    {\n                        \"category\": \"resource\",\n                        \"id\": \"created-user-id\"\n                    },\n                    {\n                        \"category\": \"subject\",\n                        \"id\": \"subject-id\"\n                    }\n                ]\n            }\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/policies/{{policyID}}",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"policies",
+								"{{policyID}}"
 							]
 						},
 						"description": "https://dev.ionic.com/api/policies/list-policies"
@@ -2412,6 +2558,78 @@
 								"{{tenantID}}",
 								"policies",
 								"{{policyID}}"
+							]
+						},
+						"description": "https://dev.ionic.com/api/policies/list-policies"
+					},
+					"response": []
+				},
+				{
+					"name": "Policies: Keyless Decision",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"created-group-name\" : [\"TEST 2\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/keyless",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"keyless"
 							]
 						},
 						"description": "https://dev.ionic.com/api/policies/list-policies"
