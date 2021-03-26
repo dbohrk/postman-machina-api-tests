@@ -1504,6 +1504,166 @@
 					"response": []
 				},
 				{
+					"name": "SCIM: Create Group",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"// console.log(jsonData.Resources[0].id)",
+									"pm.environment.set(\"groupID\", jsonData.Resources[0].id);",
+									"console.log(pm.environment.get(\"groupID\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Data Marking Name",
+									"pm.environment.set(\"groupName\", 'Group - ' + new Date().toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"externalId\": \"{{groupName}}\",\n  \"displayName\": \"{{groupName}}\",\n  \"urn:scim:schemas:extension:ionic:1.0\": {\n    \"description\": \"Group created for testing\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Groups",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Groups"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				},
+				{
+					"name": "SCIM: Update Group (add member)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"// console.log(jsonData.Resources[0].id)",
+									"pm.environment.set(\"groupID\", jsonData.Resources[0].id);",
+									"console.log(pm.environment.get(\"groupID\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Data Marking Name",
+									"pm.environment.set(\"groupName\", 'Group - ' + new Date().toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"externalId\": \"{{groupName}}\",\n  \"displayName\": \"{{groupName}}\",\n  \"urn:scim:schemas:extension:ionic:1.0\": {\n    \"description\": \"Group created for testing\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Groups",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Groups"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				},
+				{
 					"name": "SCIM: List Groups",
 					"event": [
 						{
@@ -2718,7 +2878,88 @@
 					"response": []
 				},
 				{
-					"name": "Policies: Keyless Decision (location-country)",
+					"name": "Policies: Create Policy (group membership)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"// console.log(jsonData.id)",
+									"// NOTE: The text name used to Create the Policy in policyID is overwritten",
+									"// with the id number of the created Policy becuase they use the same identifer",
+									"pm.environment.set(\"policyID\", jsonData.id);",
+									"console.log(pm.environment.get(\"policyID\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Data Marking Name",
+									"pm.environment.set(\"policyID\", ' - ' + new Date().toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"Published\",\n    \"enabled\": true,\n    \"policyId\": \"Policy Decision by location-country {{policyID}}\",\n    \"description\": \"All data.\",\n    \"ruleCombiningAlgId\": \"deny-overrides\",\n    \"rules\": [\n        {\n            \"ruleId\": \"f10a\",\n            \"effect\": \"Permit\",\n            \"description\": \"Allow access when user is not in the location Antartica.\",\n            \"condition\": {\n                \"functionId\": \"not\",\n                \"args\": [\n                    {\n                        \"functionId\": \"string-at-least-one-member-of\",\n                        \"args\": [\n                            {\n                                \"category\": \"environment\",\n                                \"id\": \"location-country\"\n                            },\n                            {\n                                \"dataType\": \"string\",\n                                \"value\": [\n                                    \"ATA\"\n                                ]\n                            }\n                        ]\n                    }\n                ]\n            }\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/policies",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"policies"
+							]
+						},
+						"description": "https://dev.ionic.com/api/policies/list-policies"
+					},
+					"response": []
+				},
+				{
+					"name": "Policies: Keyless Decision (group membership)",
 					"event": [
 						{
 							"listen": "test",
