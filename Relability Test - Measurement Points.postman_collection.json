@@ -1584,7 +1584,7 @@
 					"response": []
 				},
 				{
-					"name": "SCIM: Update Group (add member)",
+					"name": "SCIM: Update Group w/Put (add member)",
 					"event": [
 						{
 							"listen": "test",
@@ -1597,13 +1597,7 @@
 									"// Verify that reponse time is below threshold",
 									"pm.test(\"Response time is less than 500ms\", () => {",
 									"  pm.expect(pm.response.responseTime).to.be.below(500);",
-									"});",
-									"",
-									"var jsonData = JSON.parse(responseBody);",
-									"",
-									"// console.log(jsonData.Resources[0].id)",
-									"pm.environment.set(\"groupID\", jsonData.Resources[0].id);",
-									"console.log(pm.environment.get(\"groupID\"));"
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -1635,11 +1629,11 @@
 								}
 							]
 						},
-						"method": "POST",
+						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"externalId\": \"{{groupName}}\",\n  \"displayName\": \"{{groupName}}\",\n  \"urn:scim:schemas:extension:ionic:1.0\": {\n    \"description\": \"Group created for testing\"\n  }\n}",
+							"raw": "{\n      \"displayName\": \"{{groupDisplayName}}\",\n    \"members\": [\n        {\n            \"value\": \"{{userID}}\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1647,7 +1641,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Groups",
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Groups/{{groupID}}",
 							"protocol": "https",
 							"host": [
 								"{{systemURL}}"
@@ -1656,7 +1650,84 @@
 								"v2",
 								"{{tenantID}}",
 								"scim",
-								"Groups"
+								"Groups",
+								"{{groupID}}"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				},
+				{
+					"name": "SCIM: Update Group w/Patch (add member)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 204",
+									"// PATCH does not return contect. Use PUT is content return is required.",
+									"pm.test(\"Status code is 204\", () => {",
+									"  pm.response.to.have.status(204);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Data Marking Name",
+									"pm.environment.set(\"groupName\", 'Group - ' + new Date().toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"displayName\": \"{{groupDisplayName}}\",\n    \"members\": [\n        {\n            \"value\": \"{{userID}}\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Groups/{{groupID}}",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Groups",
+								"{{groupID}}"
 							]
 						},
 						"description": "https://dev.ionic.com/api/scim/list-users"
