@@ -3100,6 +3100,78 @@
 						"description": "https://dev.ionic.com/api/policies/list-policies"
 					},
 					"response": []
+				},
+				{
+					"name": "Policies: Keyless Decision (created-role)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"created-role\": \"API Administrator\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/keyless",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"keyless"
+							]
+						},
+						"description": "https://dev.ionic.com/api/policies/list-policies"
+					},
+					"response": []
 				}
 			]
 		},
