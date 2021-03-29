@@ -1387,6 +1387,92 @@
 					"response": []
 				},
 				{
+					"name": "SCIM: Create User in Group",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"console.log(jsonData)",
+									"// pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+									"// console.log(pm.environment.get(\"userID\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Data Marking Name",
+									"pm.environment.set(\"givenName\", \"Given Name -\"  + new Date().toISOString());",
+									"",
+									"// encode the givenName for Email Address",
+									"pm.environment.set(\"userEmail\", btoa(pm.environment.get(\"givenName\")));",
+									"",
+									"// print encoded string",
+									"// console.log(pm.environment.get(\"userEmail\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"schemas\": [\n        \"urn:scim:schemas:core:1.0\",\n        \"urn:scim:schemas:extension:ionic:1.0\"\n    ],\n    \"name\": {\n        \"givenName\": \"{{givenName}}\",\n        \"familyName\": \"\",\n        \"formatted\": \"{{givenName}}\"\n    },\n    \"externalId\": \"{{userEmail}}\",\n    \"emails\": [\n        {\n            \"value\": \"{{userEmail}}@bar.foo\"\n        }\n    ],\n    \"roles\": [\n        {\n            \"value\": \"\"\n        },\n        {\n            \"value\": \"\"\n        }\n    ],\n    \"urn:scim:schemas:extension:ionic:1.0\": {\n        \"domainUpn\": \"\",\n        \"sendEmail\": false,\n        \"groups\": [\n            {\n                \"type\": \"group\",\n                \"value\": \"{{groupID}}\"\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Users"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				},
+				{
 					"name": "SCIM: List Users",
 					"event": [
 						{
@@ -2004,32 +2090,7 @@
 							"script": {
 								"exec": [
 									"// Use current date and time to crate a unique Data Marking Name",
-									"pm.environment.set(\"markingName\", 'Custom Data Marking - ' + new Date().toISOString());",
-									"",
-									"",
-									"/*",
-									"//",
-									"// This was the former method incementing a counter to make a unique value",
-									"// May be useful in other Pre-request scripts",
-									"//",
-									"// Use dataMarkingCount to store the Data Marking number",
-									"dataMarkingCount = pm.environment.get(\"dataMarkingCount\");",
-									"// Check if dataMarkingCount is already defined ",
-									"if (dataMarkingCount) {",
-									"    dataMarkingCount++; // increment",
-									"} else {",
-									"    dataMarkingCount = 1; // start from 1",
-									"}",
-									"",
-									"// Build and Store Data Marking Name",
-									"currentDataMarkingName = pm.environment.get(\"dataMarkingName\") + dataMarkingCount;",
-									"pm.environment.set(\"currentDataMarkingName\", currentDataMarkingName);",
-									"// Store current count",
-									"pm.environment.set(\"dataMarkingCount\", dataMarkingCount);",
-									"",
-									"// console.log(\"Current Data Marking Name:\" + pm.environment.get(\"currentDataMarkingName\"));",
-									"// console.log(\"Data Marking Count: \" + pm.environment.get(\"dataMarkingCount\"));",
-									"*/"
+									"pm.environment.set(\"markingName\", 'Custom Data Marking - ' + new Date().toISOString());"
 								],
 								"type": "text/javascript"
 							}
@@ -2055,7 +2116,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"{{markingName}}\",\n    \"public\": true,\n    \"adminOnly\": true,\n    \"defaultValue\": \"important\",\n    \"detail\": {\n        \"dataType\": \"string\",\n        \"description\": \"Custom corporate marking.\",\n        \"values\": [\n            {\n                \"description\": \"An important item\",\n                \"name\": \"important\"\n            }\n        ]\n    }\n}"
+							"raw": "{\n    \"name\": \"{{markingName}}\",\n    \"public\": true,\n    \"adminOnly\": true,\n    \"defaultValue\": \"Data Marking Value\",\n    \"detail\": {\n        \"dataType\": \"string\",\n        \"description\": \"Custom Data Marking {{markingName}}\",\n        \"values\": [\n            {\n                \"description\": \"A {{markingName}}\",\n                \"name\": \"Data Marking Value\"\n            }\n        ]\n    }\n}"
 						},
 						"url": {
 							"raw": "https://{{systemURL}}/v2/{{tenantID}}/markings",
@@ -2606,7 +2667,13 @@
 									"// Verify that reponse time is below threshold",
 									"pm.test(\"Response time is less than 500ms\", () => {",
 									"  pm.expect(pm.response.responseTime).to.be.below(500);",
-									"});"
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"// console.log(jsonData.Resources[0].id)",
+									"pm.environment.set(\"policyID\", jsonData.Resources[0].id);",
+									"console.log(pm.environment.get(\"policyID\"));"
 								],
 								"type": "text/javascript"
 							}
@@ -3078,7 +3145,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"created-group-name\" : [\"TEST 2\"]\n}",
+							"raw": "{\n        \"group\": \"{{groupID}}\",\n        \"created-role\": \"Keyless Decision\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3150,7 +3217,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n        \"created-role\": \"API Administrator\"\n}",
+							"raw": "{\n        \"created-role\": \"Keyless Decision\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
