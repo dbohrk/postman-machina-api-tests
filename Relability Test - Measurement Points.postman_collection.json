@@ -1227,6 +1227,1286 @@
 			"name": "SCIM Tests",
 			"item": [
 				{
+					"name": "List Users (External ID)",
+					"item": [
+						{
+							"name": "SCIM: List Users (Exernal ID)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?externalid={{userEmail}}",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "externalid",
+											"value": "{{userEmail}}"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Exernal ID - Starts With)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Use the first few characters from external id (userEmail) for search query",
+											"pm.environment.set(\"externalIdSearch\", pm.environment.get(\"userEmail\").substr(0,3));",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?externalid_startswith={{externalIdSearch}}",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "externalid_startswith",
+											"value": "{{externalIdSearch}}"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Exernal ID - Does Not Start With)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Use the first few characters from external id (userEmail) for search query",
+											"pm.environment.set(\"externalIdSearch\", pm.environment.get(\"userEmail\").substr(0,3));",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?externalid_startswith_ne={{externalIdSearch}}",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "externalid_startswith_ne",
+											"value": "{{externalIdSearch}}"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Exernal ID - Contains)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Use the first few characters from external id (userEmail) for search query",
+											"pm.environment.set(\"externalIdSearch\", pm.environment.get(\"userEmail\").substr(3,6));",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?externalid_contains={{externalIdSearch}}",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "externalid_contains",
+											"value": "{{externalIdSearch}}"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Exernal ID - Does Not Contain)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Use the first few characters from external id (userEmail) for search query",
+											"pm.environment.set(\"externalIdSearch\", pm.environment.get(\"userEmail\").substr(3,6));",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?externalid_contains_ne={{externalIdSearch}}",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "externalid_contains_ne",
+											"value": "{{externalIdSearch}}"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Exernal ID - Empty)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Use the first few characters from external id (userEmail) for search query",
+											"pm.environment.set(\"externalIdSearch\", pm.environment.get(\"userEmail\").substr(3,6));",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?externalid_empty",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "externalid_empty",
+											"value": null
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Exernal ID - Is Not Empty)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Use the first few characters from external id (userEmail) for search query",
+											"pm.environment.set(\"externalIdSearch\", pm.environment.get(\"userEmail\").substr(3,6));",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?externalid_empty=false",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "externalid_empty",
+											"value": "false"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "List Users (Active)",
+					"item": [
+						{
+							"name": "SCIM: List Users (Active = true)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?active=true",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "active",
+											"value": "true"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Active = false)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?active=false",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "active",
+											"value": "false"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "List Users (Groups)",
+					"item": [
+						{
+							"name": "SCIM: List Users (Groups - Equal Group ID)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?groups={{groupID}}",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "groups",
+											"value": "{{groupID}}"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Groups - Not Equal Group ID)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?groups_ne={{groupID}}",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "groups_ne",
+											"value": "{{groupID}}"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Groups - Starts With Group ID)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Use the first few characters from external id (userEmail) for search query",
+											"pm.environment.set(\"groupsSearch\", pm.environment.get(\"groupID\").substr(0,3));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?groups_startswith={{groupID}}",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "groups_startswith",
+											"value": "{{groupID}}"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Groups - Does Not Start With Group ID)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Use the first few characters from external id (userEmail) for search query",
+											"pm.environment.set(\"groupsSearch\", pm.environment.get(\"groupID\").substr(0,3));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?groups_startswith_ne={{groupID}}",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "groups_startswith_ne",
+											"value": "{{groupID}}"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Groups - Contains Group ID)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Use the first few characters from external id (userEmail) for search query",
+											"pm.environment.set(\"groupsSearch\", pm.environment.get(\"groupID\").substr(0,3));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?groups_contains={{groupID}}",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "groups_contains",
+											"value": "{{groupID}}"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Groups - Does Not Contain Group ID)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Use the first few characters from external id (userEmail) for search query",
+											"pm.environment.set(\"groupsSearch\", pm.environment.get(\"groupID\").substr(0,3));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?groups_contains_ne={{groupID}}",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "groups_contains_ne",
+											"value": "{{groupID}}"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Groups - Group is Empty)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Use the first few characters from external id (userEmail) for search query",
+											"pm.environment.set(\"groupsSearch\", pm.environment.get(\"groupID\").substr(0,3));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?groups_empty",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "groups_empty",
+											"value": null
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Groups - Group is not Empty)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Use the first few characters from external id (userEmail) for search query",
+											"pm.environment.set(\"groupsSearch\", pm.environment.get(\"groupID\").substr(0,3));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?groups_empty=false",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "groups_empty",
+											"value": "false"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "SCIM: List Scopes",
 					"event": [
 						{
@@ -1448,7 +2728,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"schemas\": [\n        \"urn:scim:schemas:core:1.0\",\n        \"urn:scim:schemas:extension:ionic:1.0\"\n    ],\n    \"name\": {\n        \"givenName\": \"{{givenName}}\",\n        \"familyName\": \"\",\n        \"formatted\": \"{{givenName}}\"\n    },\n    \"externalId\": \"{{userEmail}}\",\n    \"emails\": [\n        {\n            \"value\": \"{{userEmail}}@bar.foo\"\n        }\n    ],\n    \"roles\": [\n        {\n            \"value\": \"\"\n        },\n        {\n            \"value\": \"\"\n        }\n    ],\n    \"urn:scim:schemas:extension:ionic:1.0\": {\n        \"domainUpn\": \"\",\n        \"sendEmail\": false,\n        \"groups\": [\n            {\n                \"type\": \"group\",\n                \"value\": \"{{groupID}}\"\n            }\n        ]\n    }\n}",
+							"raw": "{\n    \"schemas\": [\n        \"urn:scim:schemas:core:1.0\",\n        \"urn:scim:schemas:extension:ionic:1.0\"\n    ],\n    \"name\": {\n        \"givenName\": \"{{givenName}}\",\n        \"familyName\": \"\",\n        \"formatted\": \"{{givenName}}\"\n    },\n    \"externalId\": \"{{userEmail}}\",\n    \"emails\": [\n        {\n            \"value\": \"{{userEmail}}@bar.foo\"\n        }\n    ],\n    \"roles\": [\n        {\n            \"value\": \"\"\n        },\n        {\n            \"value\": \"\"\n        }\n    ],\n    \"urn:scim:schemas:extension:ionic:1.0\": {\n        \"domainUpn\": \"{{userEmail}}\",\n        \"sendEmail\": false,\n        \"groups\": [\n            {\n                \"type\": \"group\",\n                \"value\": \"{{groupID}}\"\n            }\n        ]\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1527,6 +2807,1407 @@
 								"{{tenantID}}",
 								"scim",
 								"Users"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				},
+				{
+					"name": "SCIM: Fetch User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users/{{userID}}",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Users",
+								"{{userID}}"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				},
+				{
+					"name": "SCIM: Create Group",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"// console.log(jsonData.Resources[0].id)",
+									"pm.environment.set(\"groupID\", jsonData.Resources[0].id);",
+									"console.log(pm.environment.get(\"groupID\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Data Marking Name",
+									"pm.environment.set(\"groupName\", 'Group - ' + new Date().toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"externalId\": \"{{groupName}}\",\n  \"displayName\": \"{{groupName}}\",\n  \"urn:scim:schemas:extension:ionic:1.0\": {\n    \"description\": \"Group created for testing\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Groups",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Groups"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				},
+				{
+					"name": "SCIM: Update Group w/Put (add member)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Data Marking Name",
+									"pm.environment.set(\"groupName\", 'Group - ' + new Date().toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n      \"displayName\": \"{{groupDisplayName}}\",\n    \"members\": [\n        {\n            \"value\": \"{{userID}}\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Groups/{{groupID}}",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Groups",
+								"{{groupID}}"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				},
+				{
+					"name": "SCIM: Update Group w/Patch (add member)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 204",
+									"// PATCH does not return contect. Use PUT is content return is required.",
+									"pm.test(\"Status code is 204\", () => {",
+									"  pm.response.to.have.status(204);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Data Marking Name",
+									"pm.environment.set(\"groupName\", 'Group - ' + new Date().toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"displayName\": \"{{groupDisplayName}}\",\n    \"members\": [\n        {\n            \"value\": \"{{userID}}\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Groups/{{groupID}}",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Groups",
+								"{{groupID}}"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				},
+				{
+					"name": "SCIM: List Groups",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"// console.log(jsonData.Resources[0].id)",
+									"pm.environment.set(\"groupID\", jsonData.Resources[0].id);",
+									"console.log(pm.environment.get(\"groupID\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Groups",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Groups"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				},
+				{
+					"name": "SCIM: Fetch Group",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Groups/{{groupID}}",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Groups",
+								"{{groupID}}"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				},
+				{
+					"name": "SCIM: Delete Group",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Groups/{{groupID}}",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Groups",
+								"{{groupID}}"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				},
+				{
+					"name": "SCIM: List Roles",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"// console.log(jsonData.Resources[0].id)",
+									"pm.environment.set(\"roleID\", jsonData.Resources[0].id);",
+									"console.log(pm.environment.get(\"roleID\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Roles",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Roles"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				},
+				{
+					"name": "SCIM: Fetch Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Roles/{{roleID}}",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Roles",
+								"{{roleID}}"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SCIM Tests Copy",
+			"item": [
+				{
+					"name": "List Users (External ID)",
+					"item": [
+						{
+							"name": "SCIM: List Users (Exernal ID)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?externalid={{userEmail}}",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "externalid",
+											"value": "{{userEmail}}"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Exernal ID - Starts With)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Use the first few characters from external id (userEmail) for search query",
+											"pm.environment.set(\"externalIdSearch\", pm.environment.get(\"userEmail\").substr(0,3));",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?externalid_startswith={{externalIdSearch}}",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "externalid_startswith",
+											"value": "{{externalIdSearch}}"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Exernal ID - Contains)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Use the first few characters from external id (userEmail) for search query",
+											"pm.environment.set(\"externalIdSearch\", pm.environment.get(\"userEmail\").substr(3,6));",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?externalid_contains={{externalIdSearch}}",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "externalid_contains",
+											"value": "{{externalIdSearch}}"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Exernal ID - Empty)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Use the first few characters from external id (userEmail) for search query",
+											"pm.environment.set(\"externalIdSearch\", pm.environment.get(\"userEmail\").substr(3,6));",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?externalid_empty",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "externalid_empty",
+											"value": null
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "List Users (Active)",
+					"item": [
+						{
+							"name": "SCIM: List Users (Active = true)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?active=true",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "active",
+											"value": "true"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						},
+						{
+							"name": "SCIM: List Users (Active = false)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Verify status code is 200",
+											"pm.test(\"Status code is 200\", () => {",
+											"  pm.response.to.have.status(200);",
+											"});",
+											"// Verify that reponse time is below threshold",
+											"pm.test(\"Response time is less than 500ms\", () => {",
+											"  pm.expect(pm.response.responseTime).to.be.below(500);",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"// console.log(jsonData.Resources[0].id)",
+											"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+											"console.log(pm.environment.get(\"userID\"));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "accessToken",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										},
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?active=false",
+									"protocol": "https",
+									"host": [
+										"{{systemURL}}"
+									],
+									"path": [
+										"v2",
+										"{{tenantID}}",
+										"scim",
+										"Users"
+									],
+									"query": [
+										{
+											"key": "active",
+											"value": "false"
+										}
+									]
+								},
+								"description": "https://dev.ionic.com/api/scim/list-users"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "SCIM: List Scopes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Scopes",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Scopes"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-scopes"
+					},
+					"response": []
+				},
+				{
+					"name": "SCIM: List Devices",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"// console.log(jsonData.Resources[0].id)",
+									"pm.environment.set(\"deviceID\", jsonData.Resources[0].id);",
+									"console.log(pm.environment.get(\"deviceID\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Devices",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SCIM: Fetch Device",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Devices/{{deviceID}}",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Devices",
+								"{{deviceID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SCIM: Create User in Group",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"console.log(jsonData)",
+									"// pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+									"// console.log(pm.environment.get(\"userID\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Use current date and time to crate a unique Data Marking Name",
+									"pm.environment.set(\"givenName\", \"Given Name -\"  + new Date().toISOString());",
+									"",
+									"// encode the givenName for Email Address",
+									"pm.environment.set(\"userEmail\", btoa(pm.environment.get(\"givenName\")));",
+									"",
+									"// print encoded string",
+									"// console.log(pm.environment.get(\"userEmail\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"schemas\": [\n        \"urn:scim:schemas:core:1.0\",\n        \"urn:scim:schemas:extension:ionic:1.0\"\n    ],\n    \"name\": {\n        \"givenName\": \"{{givenName}}\",\n        \"familyName\": \"\",\n        \"formatted\": \"{{givenName}}\"\n    },\n    \"externalId\": \"{{userEmail}}\",\n    \"emails\": [\n        {\n            \"value\": \"{{userEmail}}@bar.foo\"\n        }\n    ],\n    \"roles\": [\n        {\n            \"value\": \"\"\n        },\n        {\n            \"value\": \"\"\n        }\n    ],\n    \"urn:scim:schemas:extension:ionic:1.0\": {\n        \"domainUpn\": \"{{userEmail}}\",\n        \"sendEmail\": false,\n        \"groups\": [\n            {\n                \"type\": \"group\",\n                \"value\": \"{{groupID}}\"\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Users"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				},
+				{
+					"name": "SCIM: List Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"// console.log(jsonData.Resources[0].id)",
+									"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+									"console.log(pm.environment.get(\"userID\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Users"
+							]
+						},
+						"description": "https://dev.ionic.com/api/scim/list-users"
+					},
+					"response": []
+				},
+				{
+					"name": "SCIM: List Users (Groups - Equal)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verify status code is 200",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"// Verify that reponse time is below threshold",
+									"pm.test(\"Response time is less than 500ms\", () => {",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"// console.log(jsonData.Resources[0].id)",
+									"pm.environment.set(\"userID\", jsonData.Resources[0].id);",
+									"console.log(pm.environment.get(\"userID\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "accessToken",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{systemURL}}/v2/{{tenantID}}/scim/Users?groups={{groupID}}",
+							"protocol": "https",
+							"host": [
+								"{{systemURL}}"
+							],
+							"path": [
+								"v2",
+								"{{tenantID}}",
+								"scim",
+								"Users"
+							],
+							"query": [
+								{
+									"key": "groups",
+									"value": "{{groupID}}"
+								}
 							]
 						},
 						"description": "https://dev.ionic.com/api/scim/list-users"
